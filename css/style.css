@@ -1,0 +1,130 @@
+/* モルックモンスター 緑 : 画面まわりのスタイル
+   色は 4色の緑パレットだけ（#0f380f #306230 #8bac0f #9bbc0f） */
+html, body {
+  margin: 0; padding: 0; height: 100%;
+  background: #0f380f;
+  overflow: hidden;
+  touch-action: none;                 /* スクロール・ズームを止める */
+  -webkit-user-select: none; user-select: none;
+  -webkit-touch-callout: none;        /* 長押しメニューを出さない */
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+  font-family: "DotGothic16", "MS Gothic", monospace;
+}
+/* 公開先（Artifact）が外側に付ける :root の余白を打ち消す。
+   セーフエリアの余白は #app と #controls の側だけで取る（二重にならないように） */
+html:root { padding: 0; }
+#app {
+  display: flex; flex-direction: column;
+  height: 100vh; height: 100dvh;
+  width: 100%;
+  /* iPhone のノッチ／ダイナミックアイランドを避ける（非対応なら 0px） */
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: #0f380f;
+}
+#screen {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+#game {
+  display: block;
+  image-rendering: crisp-edges;      /* 古いブラウザ用 */
+  image-rendering: pixelated;
+  background: #0f380f;
+}
+
+/* ---- タッチ用ボタン（PCの横長画面では出さない） ---- */
+#controls {
+  display: none;
+  position: relative;
+  flex: 0 0 auto;
+  height: 250px;
+  height: calc(250px + env(safe-area-inset-bottom, 0px));   /* ホームバー分の余白 */
+  background: #0f380f;
+  touch-action: none;
+}
+/* 縦長の画面・タッチ端末では出す */
+@media (max-aspect-ratio: 1/1) { #controls { display: block; } }
+body.touch #controls { display: block; }
+@media (pointer: coarse) { #controls { display: block; } }
+
+/* 十字キー */
+#dpad {
+  position: absolute; left: 14px; top: 34px;
+  width: 168px; height: 168px;
+  touch-action: none;
+}
+#dpad .bar { position: absolute; background: #306230; border: 3px solid #8bac0f; box-sizing: border-box; }
+#dpad .bar.h { left: 0; top: 56px; width: 168px; height: 56px; border-radius: 10px; }
+#dpad .bar.v { left: 56px; top: 0; width: 56px; height: 168px; border-radius: 10px; }
+#dpad .arrow { position: absolute; width: 0; height: 0; border: 12px solid transparent; }
+#dpad .arrow.up { left: 72px; top: 10px; border-bottom: 18px solid #9bbc0f; border-top: 0; }
+#dpad .arrow.down { left: 72px; bottom: 10px; border-top: 18px solid #9bbc0f; border-bottom: 0; }
+#dpad .arrow.left { top: 72px; left: 10px; border-right: 18px solid #9bbc0f; border-left: 0; }
+#dpad .arrow.right { top: 72px; right: 10px; border-left: 18px solid #9bbc0f; border-right: 0; }
+#dpad .arrow.on.up { border-bottom-color: #0f380f; }
+#dpad .arrow.on.down { border-top-color: #0f380f; }
+#dpad .arrow.on.left { border-right-color: #0f380f; }
+#dpad .arrow.on.right { border-left-color: #0f380f; }
+
+/* A・B ボタン */
+#abtns { position: absolute; right: 14px; top: 56px; width: 168px; height: 130px; }
+#abtns button {
+  position: absolute; width: 74px; height: 74px; border-radius: 50%;
+  background: #8bac0f; color: #0f380f; border: 4px solid #9bbc0f;
+  font-family: inherit; font-size: 28px; font-weight: bold;
+  touch-action: none; padding: 0; outline: none;
+  box-shadow: 0 5px 0 #306230;
+}
+#btn-b { left: 0; top: 50px; }
+#btn-a { right: 0; top: 0; }
+#abtns button.on { background: #306230; color: #9bbc0f; box-shadow: none; }
+
+/* MENU（小さめ） */
+#btn-start {
+  position: absolute; left: 50%; bottom: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); margin-left: -42px;
+  width: 84px; height: 34px; border-radius: 17px;
+  background: #306230; color: #9bbc0f; border: 3px solid #8bac0f;
+  font-family: inherit; font-size: 14px; font-weight: bold;
+  touch-action: none; padding: 0; outline: none;
+}
+#btn-start.on { background: #8bac0f; color: #0f380f; }
+
+/* 横向きのスマホ：ボタンを画面の左右に重ねる（ゲーム画面は中央） */
+@media (orientation: landscape) and (pointer: coarse) {
+  #app { position: relative; }
+  #controls {
+    position: absolute; left: 0; right: 0; bottom: 0; top: 0;
+    height: auto; background: transparent; pointer-events: none;
+  }
+  #controls > * { pointer-events: auto; }
+  #dpad { top: auto; bottom: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    left: 20px; left: max(20px, env(safe-area-inset-left, 0px)); width: 140px; height: 140px; transform: none; }
+  #dpad .bar.h { top: 46px; width: 140px; height: 48px; }
+  #dpad .bar.v { left: 46px; width: 48px; height: 140px; }
+  #dpad .arrow.up { left: 59px; } #dpad .arrow.down { left: 59px; }
+  #dpad .arrow.left { top: 59px; } #dpad .arrow.right { top: 59px; }
+  #abtns { top: auto; bottom: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    right: 20px; right: max(20px, env(safe-area-inset-right, 0px)); }
+  #btn-start { top: 10px; top: calc(10px + env(safe-area-inset-top, 0px)); bottom: auto; }
+}
+
+/* 幅359px以下の小さい画面：十字キーとA/Bが重ならないよう、余白とサイズを縮める */
+@media (max-width: 359px) {
+  #controls { height: 226px; height: calc(226px + env(safe-area-inset-bottom, 0px)); }
+  #dpad { left: 6px; top: 40px; width: 132px; height: 132px; }
+  #dpad .bar.h { top: 44px; width: 132px; height: 44px; border-radius: 8px; }
+  #dpad .bar.v { left: 44px; width: 44px; height: 132px; border-radius: 8px; }
+  #dpad .arrow { border-width: 10px; }
+  #dpad .arrow.up { left: 56px; top: 8px; border-bottom-width: 15px; }
+  #dpad .arrow.down { left: 56px; bottom: 8px; border-top-width: 15px; }
+  #dpad .arrow.left { top: 56px; left: 8px; border-right-width: 15px; }
+  #dpad .arrow.right { top: 56px; right: 8px; border-left-width: 15px; }
+  #abtns { right: 6px; top: 52px; width: 128px; height: 112px; }
+  #abtns button { width: 58px; height: 58px; font-size: 22px; border-width: 3px; }
+  #btn-b { left: 0; top: 40px; }
+  #btn-a { right: 0; top: 0; }
+  #btn-start { margin-left: -36px; width: 72px; height: 30px; font-size: 12px; bottom: 8px; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); }
+}
